@@ -1,5 +1,8 @@
+const querystring = require('querystring')
+
 const handleBlogRouter = require('./src/router/blog')
 const handleUserRouter = require('./src/router/user')
+
 
 const serverHandle = (req, res) => {
 	// 设置返回格式
@@ -8,6 +11,9 @@ const serverHandle = (req, res) => {
 	// 获取 path
 	const {url} = req
 	req.path = url.split('?')[0]
+
+	// 解析 query
+	req.query = querystring.parse(url.split('?')[1])
 
 
 
