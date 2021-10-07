@@ -1,5 +1,6 @@
-const { loginCheck } = require('../controller/user')
+const { login } = require('../controller/user')
 const { SuccessModel, ErrorModel } = require('../model/resModel')
+
 
 
 const handleUserRouter = (req, res) => {
@@ -11,17 +12,51 @@ const handleUserRouter = (req, res) => {
 		// }
 
 	// 登录
-	if(method === 'POST' && path === '/api/user/login'){
-		const { username, password } = req.body
+	if(method === 'GET' && path === '/api/user/login'){
+		// const { username, password } = req.body
+		const { username, password } = req.query
 
-		const result = loginCheck(username, password)
+
+		const result = login(username, password)
 		return result.then(rows => {
-			const res = rows[0] || {}
-			if(res.username){
+			const data = rows[0] || {}
+			if(data.username){
+
+				// 操作 cookie,
+				// httpOnly: 只允许通过后端改,不允许在前端改, document.cookie 访问不到
+				// res.setHeader('Set-Cookie',`username=${data.username}; path=/; httpOnly; expires=${getCookieExpires()}`)
+
+				// 设置 session
+				req.session.username = data.username
+				req.session.realname = data.realname
+
 				return new SuccessModel()
 			}
 			return new ErrorModel('登录失败')
 		})
+	}
+
+	// 登录验证测试
+	if(method === 'GET' && req.path === '/api/user/login-test') {
+		// if(req.cookie.username){
+		// 	return Promise.resolve(
+		// 		new SuccessModel({
+		// 			username: req.cookie.username
+		// 		})
+		// 	)
+		// }
+
+		if(req.session.username){
+			return Promise.resolve(
+				new SuccessModel({
+					username: req.session.username
+				})
+			)
+		}
+
+		return Promise.resolve(
+			new ErrorModel('尚未登录')
+		)
 	}
 }
 
