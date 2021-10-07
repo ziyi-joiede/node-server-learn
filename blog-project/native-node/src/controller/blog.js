@@ -1,3 +1,5 @@
+const { exec } = require('../db/mysql')
+
 /**
  * @description 获取博客列表
  * @param { string } author 博客作者 
@@ -6,22 +8,38 @@
  */
 const getList = (author, keyword) => {
 	// 先返回假数据 (格式是正确的)
-	return [
-		{
-			id: '1',
-			title: '标题 A',
-			content: '内容 A',
-			createTime: 1633441214308,
-			author: 'zhangsan'
-		},
-		{
-			id: '2',
-			title: '标题 B',
-			content: '内容 B',
-			createTime: 1633441245276,
-			author: 'lisi'
-		}
-	]
+	// return [
+	// 	{
+	// 		id: '1',
+	// 		title: '标题 A',
+	// 		content: '内容 A',
+	// 		createTime: 1633441214308,
+	// 		author: 'zhangsan'
+	// 	},
+	// 	{
+	// 		id: '2',
+	// 		title: '标题 B',
+	// 		content: '内容 B',
+	// 		createTime: 1633441245276,
+	// 		author: 'lisi'
+	// 	}
+	// ]
+
+	// 1=1 占位
+	let sql = `select id, title, content, author from blogs where 1=1 `
+
+	if(author) {
+		sql += `and author='${author}' `
+	}
+
+	if(keyword) {
+		sql += `and title like '%${keyword}%' `
+	}
+
+	sql += `order by createtime desc;`
+
+	// 返回 promise
+	return exec(sql)
 }
 
 /**
@@ -31,13 +49,17 @@ const getList = (author, keyword) => {
  */
 const getDetail = id => {
 	// 先返回假数据
-	return {
-			id: '1',
-			title: '标题 A',
-			content: '内容 A',
-			createTime: 1633441214308,
-			author: 'zhangsan'
-	}
+	// return {
+	// 		id: '1',
+	// 		title: '标题 A',
+	// 		content: '内容 A',
+	// 		createTime: 1633441214308,
+	// 		author: 'zhangsan'
+	// }
+
+	let sql = `select * from blogs where id=${id}`
+
+	return exec(sql)
 }
 
 /**
@@ -45,11 +67,18 @@ const getDetail = id => {
  * @param { object } blogData 
  */
 const newBlog = (blogData = {}) => {
-	// blogData 是一个博客对象, 包含 title, content 属性
+	// blogData 是一个博客对象, 包含 title, content, author 属性
 
-	return {
-		id: '3' // 表示新建博客, 插入到数据表里面的 id
-	}
+	// return {
+	// 	id: '3' // 表示新建博客, 插入到数据表里面的 id
+	// }
+
+	const { title, content, author } = blogData
+	const createtime = Date.now() 
+
+	let sql = `insert into blogs (title, content, createtime, author) values ('${title}', '${content}', ${createtime}, '${author}');`
+
+	return exec(sql)
 }
 
 /**
@@ -60,9 +89,15 @@ const newBlog = (blogData = {}) => {
  */
 const updateBlog = (id, blogData = {}) => {
 	// id 就是要更新博客的 id
-	// blogData 是一个博客对象, 包含 title, content 属性
+	// blogData 是一个博客对象, 包含 title, content, author 属性
 
-	return  false
+	// return true
+
+	const { title, content } = blogData
+
+	let sql = `update blogs set title='${title}', content='${content}' where id=${id}`
+
+	return exec(sql)
 }
 
 /**
@@ -70,9 +105,12 @@ const updateBlog = (id, blogData = {}) => {
  * @param { string } id 删除博客的 id
  * @returns 
  */
-const delBlog = id => {
+const delBlog = (id, author) => {
 	// id 就是要删除博客的 id
-	return true
+	// return true
+
+	let sql = `delete from blogs where id=${id} and author='${author}';`
+	return exec(sql)
 }
 
 module.exports = {
