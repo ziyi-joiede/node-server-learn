@@ -1,4 +1,4 @@
-const { exec } = require('../db/mysql')
+const { exec, escape } = require('../db/mysql')
 
 /**
  * @description 获取博客列表
@@ -7,6 +7,9 @@ const { exec } = require('../db/mysql')
  * @returns 
  */
 const getList = (author, keyword) => {
+
+	author = escape(author)
+	keyword = escape(keyword)
 	// 先返回假数据 (格式是正确的)
 	// return [
 	// 	{
@@ -29,11 +32,11 @@ const getList = (author, keyword) => {
 	let sql = `select id, title, content, author from blogs where 1=1 `
 
 	if(author) {
-		sql += `and author='${author}' `
+		sql += `and author=${author} `
 	}
 
 	if(keyword) {
-		sql += `and title like '%${keyword}%' `
+		sql += `and title like %${keyword}% `
 	}
 
 	sql += `order by createtime desc;`
@@ -48,6 +51,8 @@ const getList = (author, keyword) => {
  * @returns 
  */
 const getDetail = id => {
+	id = escape(id)
+
 	// 先返回假数据
 	// return {
 	// 		id: '1',
@@ -74,9 +79,12 @@ const newBlog = (blogData = {}) => {
 	// }
 
 	const { title, content, author } = blogData
+	title = escape(title)
+	content = escape(content)
+	author = escape(author) 
 	const createtime = Date.now() 
 
-	let sql = `insert into blogs (title, content, createtime, author) values ('${title}', '${content}', ${createtime}, '${author}');`
+	let sql = `insert into blogs (title, content, createtime, author) values (${title}, ${content}, ${createtime}, ${author});`
 
 	return exec(sql)
 }
@@ -94,8 +102,11 @@ const updateBlog = (id, blogData = {}) => {
 	// return true
 
 	const { title, content } = blogData
+	id = escape(id)
+	title = escape(title)
+	content = escape(content)
 
-	let sql = `update blogs set title='${title}', content='${content}' where id=${id}`
+	let sql = `update blogs set title=${title}, content=${content} where id=${id}`
 
 	return exec(sql)
 }
@@ -108,6 +119,8 @@ const updateBlog = (id, blogData = {}) => {
 const delBlog = (id, author) => {
 	// id 就是要删除博客的 id
 	// return true
+
+	id = escape(id)
 
 	let sql = `delete from blogs where id=${id} and author='${author}';`
 	return exec(sql)
