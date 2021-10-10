@@ -3,6 +3,8 @@ const querystring = require('querystring')
 const handleBlogRouter = require('./src/router/blog')
 const handleUserRouter = require('./src/router/user')
 
+const { set, get } = require('./src/db/redis')
+
 // 获取 cookie 的过期时间
 const getCookieExpires = () => {
 	const d = new Date()
@@ -72,44 +74,59 @@ const serverHandle = (req, res) => {
 	})
 
 	// 解析 session
+	// let needSetCookie = false
+	// let userId = req.cookie.userid
+	// if(userId) {
+	// 	// if(SESSION_DATA[userId]){
+	// 	// 	req.session = SESSION_DATA[userId]
+	// 	// }else {
+	// 	// 	SESSION_DATA[userId] = {}
+	// 	// 	req.session = SESSION_DATA[userId]
+	// 	// }
+
+	// 	// 简化
+	// 	if(!SESSION_DATA[userId]){
+	// 		SESSION_DATA[userId] = {}
+	// 	}
+	// 	// req.session = SESSION_DATA[userId]
+	// }else {
+	// 	needSetCookie = true
+	// 	userId = `${Date.now()}_${Math.random()}}`
+	// 	SESSION_DATA[userId] = {}
+	// 	// req.session = SESSION_DATA[userId]
+	// }
+	// req.session = SESSION_DATA[userId]
+
+	// 解析 session (使用 redis)
 	let needSetCookie = false
 	let userId = req.cookie.userid
-	if(userId) {
-		// if(SESSION_DATA[userId]){
-		// 	req.session = SESSION_DATA[userId]
-		// }else {
-		// 	SESSION_DATA[userId] = {}
-		// 	req.session = SESSION_DATA[userId]
-		// }
-
-		// 简化
-		if(!SESSION_DATA[userId]){
-			SESSION_DATA[userId] = {}
-		}
-		// req.session = SESSION_DATA[userId]
-	}else {
-		needSetCookie = true
-		userId = `${Date.now()}_${Math.random()}}`
-		SESSION_DATA[userId] = {}
-		// req.session = SESSION_DATA[userId]
+	if(!userId) {
+			needSetCookie = true
+			userId = `${Date.now()}_${Math.random()}`
+			// 初始化 redis 中的 session 的初始值
+			set(userId, {})
 	}
-	req.session = SESSION_DATA[userId]
-	
-
-	// 处理 postData
-	getPostData(req).then(postData => {
+	// 为 req 创建一个 sessionId 属性
+	req.sessionId = userId
+	get(req.sessionId)
+	.then(sessionData => {
+		if(!sessionData) {
+			// 初始化 redis 中的 session 中的初始值
+			set(req.sessionId, {})
+			// 设置 session
+			res.session = {}
+		}else {
+			req.session = sessionData
+		}
+		return getPostData(req)
+	})
+	.then(postData => {
 		req.body = postData
-
-
-		// 处理路由
-
-		// 处理 blog 路由
-		// const blogData = handleBlogRouter(req, res)
 		const blogResult = handleBlogRouter(req, res)
 		if(blogResult){
 			blogResult.then(blogData => {
 				if(needSetCookie){
-					res.setHeader('Set-Cookie',`userId=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`)
+					res.setHeader('Set-Cookie',`userid=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`)
 				}
 				
 				if(blogData){
@@ -133,7 +150,7 @@ const serverHandle = (req, res) => {
 		if(userResult){
 			userResult.then(userData => {
 				if(needSetCookie){
-					res.setHeader('Set-Cookie',`userId=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`)
+					res.setHeader('Set-Cookie',`userid=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`)
 				}
 
 				res.end(
@@ -149,8 +166,64 @@ const serverHandle = (req, res) => {
 		})
 		res.write('404 Not Found\n')
 		res.end()
+	}) 
+	
 
-	})
+	// 处理 postData
+	// getPostData(req).then(postData => {
+		// req.body = postData
+
+
+		// 处理路由
+
+		// 处理 blog 路由
+		// const blogData = handleBlogRouter(req, res)
+		// const blogResult = handleBlogRouter(req, res)
+		// if(blogResult){
+		// 	blogResult.then(blogData => {
+		// 		if(needSetCookie){
+		// 			res.setHeader('Set-Cookie',`userId=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`)
+		// 		}
+				
+		// 		if(blogData){
+		// 			res.end(
+		// 				JSON.stringify(blogData)
+		// 			)
+		// 		}	
+		// 	})
+		// 	return
+		// }
+		
+		// // 处理 user 路由
+		// // const userData = handleUserRouter(req, res)
+		// // if(userData){
+		// // 	res.end(
+		// // 		JSON.stringify(userData)
+		// // 	)
+		// // 	return
+		// // }
+		// const userResult = handleUserRouter(req, res)
+		// if(userResult){
+		// 	userResult.then(userData => {
+		// 		if(needSetCookie){
+		// 			res.setHeader('Set-Cookie',`userId=${userId}; path=/; httpOnly; expires=${getCookieExpires()}`)
+		// 		}
+
+		// 		res.end(
+		// 			JSON.stringify(userData)
+		// 		)
+		// 	})
+		// 	return
+		// }
+
+		// // 未命中路由,返回 404
+		// res.writeHead(404, {
+		// 	'Content-Type': 'text/plain'
+		// })
+		// res.write('404 Not Found\n')
+		// res.end()
+
+	// })
 
   
 }
