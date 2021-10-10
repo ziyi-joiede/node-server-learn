@@ -1,5 +1,5 @@
 const { exec, escape } = require('../db/mysql')
-
+const xss = require('xss')
 /**
  * @description 获取博客列表
  * @param { string } author 博客作者 
@@ -79,9 +79,9 @@ const newBlog = (blogData = {}) => {
 	// }
 
 	const { title, content, author } = blogData
-	title = escape(title)
-	content = escape(content)
-	author = escape(author) 
+	title = xss(escape(title))
+	content = xss(escape(content))
+	author = xss(escape(author)) 
 	const createtime = Date.now() 
 
 	let sql = `insert into blogs (title, content, createtime, author) values (${title}, ${content}, ${createtime}, ${author});`
@@ -103,8 +103,8 @@ const updateBlog = (id, blogData = {}) => {
 
 	const { title, content } = blogData
 	id = escape(id)
-	title = escape(title)
-	content = escape(content)
+	title = xss(escape(title))
+	content = xss(escape(content))
 
 	let sql = `update blogs set title=${title}, content=${content} where id=${id}`
 
