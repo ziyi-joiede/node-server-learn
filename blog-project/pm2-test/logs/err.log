@@ -1,0 +1,40 @@
+2021-10-24 23:15:28: 假装出错 1635088528041
+2021-10-24 23:15:28: 假装出错 1635088528439
+2021-10-24 23:15:28: 假装出错 1635088528868
+2021-10-24 23:15:50: 假装出错 1635088550648
+2021-10-24 23:15:50: Error: /err, 出错了
+2021-10-24 23:15:50:     at Server.<anonymous> (/Users/liyongwei/disk/L-yw/study/node-server-learn/blog-project/pm2-test/app.js:11:9)
+2021-10-24 23:15:50:     at Server.emit (events.js:315:20)
+2021-10-24 23:15:50:     at Server.<anonymous> (/usr/local/lib/node_modules/pm2/node_modules/@pm2/io/build/main/metrics/httpMetrics.js:166:33)
+2021-10-24 23:15:50:     at parserOnIncoming (_http_server.js:874:12)
+2021-10-24 23:15:50:     at HTTPParser.parserOnHeadersComplete (_http_common.js:126:17)
+2021-10-24 23:15:51: 假装出错 1635088551753
+2021-10-24 23:15:51: Error: /err, 出错了
+2021-10-24 23:15:51:     at Server.<anonymous> (/Users/liyongwei/disk/L-yw/study/node-server-learn/blog-project/pm2-test/app.js:11:9)
+2021-10-24 23:15:51:     at Server.emit (events.js:315:20)
+2021-10-24 23:15:51:     at Server.<anonymous> (/usr/local/lib/node_modules/pm2/node_modules/@pm2/io/build/main/metrics/httpMetrics.js:166:33)
+2021-10-24 23:15:51:     at parserOnIncoming (_http_server.js:874:12)
+2021-10-24 23:15:51:     at HTTPParser.parserOnHeadersComplete (_http_common.js:126:17)
+2021-10-24 23:15:52: 假装出错 1635088552802
+2021-10-24 23:15:52: Error: /err, 出错了
+2021-10-24 23:15:52:     at Server.<anonymous> (/Users/liyongwei/disk/L-yw/study/node-server-learn/blog-project/pm2-test/app.js:11:9)
+2021-10-24 23:15:52:     at Server.emit (events.js:315:20)
+2021-10-24 23:15:52:     at Server.<anonymous> (/usr/local/lib/node_modules/pm2/node_modules/@pm2/io/build/main/metrics/httpMetrics.js:166:33)
+2021-10-24 23:15:52:     at parserOnIncoming (_http_server.js:874:12)
+2021-10-24 23:15:52:     at HTTPParser.parserOnHeadersComplete (_http_common.js:126:17)
+2021-10-24 23:15:53: 假装出错 1635088553851
+2021-10-24 23:15:53: Error: /err, 出错了
+2021-10-24 23:15:53:     at Server.<anonymous> (/Users/liyongwei/disk/L-yw/study/node-server-learn/blog-project/pm2-test/app.js:11:9)
+2021-10-24 23:15:53:     at Server.emit (events.js:315:20)
+2021-10-24 23:15:53:     at Server.<anonymous> (/usr/local/lib/node_modules/pm2/node_modules/@pm2/io/build/main/metrics/httpMetrics.js:166:33)
+2021-10-24 23:15:53:     at parserOnIncoming (_http_server.js:874:12)
+2021-10-24 23:15:53:     at HTTPParser.parserOnHeadersComplete (_http_common.js:126:17)
+2021-10-24 23:15:58: 假装出错 1635088558889
+2021-10-24 23:15:58: Error: /err, 出错了
+2021-10-24 23:15:58:     at Server.<anonymous> (/Users/liyongwei/disk/L-yw/study/node-server-learn/blog-project/pm2-test/app.js:11:9)
+2021-10-24 23:15:58:     at Server.emit (events.js:315:20)
+2021-10-24 23:15:58:     at Server.<anonymous> (/usr/local/lib/node_modules/pm2/node_modules/@pm2/io/build/main/metrics/httpMetrics.js:166:33)
+2021-10-24 23:15:58:     at parserOnIncoming (_http_server.js:874:12)
+2021-10-24 23:15:58:     at HTTPParser.parserOnHeadersComplete (_http_common.js:126:17)
+2021-10-24 23:15:59: 假装出错 1635088559390
+2021-10-24 23:16:12: 假装出错 1635088572388
